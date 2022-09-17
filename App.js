@@ -1,29 +1,44 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.city}>
         <Text style={styles.cityName}>Seoul</Text>
-      </View>
-      <View style={styles.weather}>
+      </View>      
+      <ScrollView 
+        contentContainerStyle={styles.weather} 
+        horizontal // 가로로 스크롤링되게 해줌.
+        showsHorizontalScrollIndicator={false}
+        // indicatorStyle='white'
+        pagingEnabled // ture일 경우, 왼전히 스크롤링을 해야 스크롤이 넘어가게함.
+      >
         <View style={styles.day}>
           <Text style={styles.temp}>27</Text>
           <Text style={styles.description}>Sunny</Text>
         </View>
-      </View>
+        <View style={styles.day}>
+          <Text style={styles.temp}>27</Text>
+          <Text style={styles.description}>Sunny</Text>
+        </View>
+        <View style={styles.day}>
+          <Text style={styles.temp}>27</Text>
+          <Text style={styles.description}>Sunny</Text>
+        </View>
+      </ScrollView>      
     </View>
   );
 }
 
 const styles = StyleSheet.create({ 
   container: {
-    flex: 1, backgroundColor: 'tomato'
+    flex: 1, 
+    backgroundColor: 'tomato'
   },
   city: {
     flex: 1.2,
-    justifyContent: 'center',
+    justifyContent: 'center', 
     alignItems: 'center'
   },
   cityName: {
@@ -31,10 +46,16 @@ const styles = StyleSheet.create({
     fontWeight: '500'
   },
   weather: {
-    flex:3, 
+    // ScrollView의 사이즈가 정해지면, 아이템을 기준으로 가변적으로 변해야하는데, 사이즈가 고정된다?
+    // ScrollView에는 Flex Size를 줄 필요가 없다. -> 이 ScrollView는 스크린보다 커야한다. 
+    // 즉, ScrollView는 스크린 사이즈와 무관하게 아이템 크기만큼 늘어나야하는데, 사이즈를 지정하면 한정된다. 
+    // 우리는 스크린을 넘겨서 스크롤 하고 싶기 때문에 ScrollView가 ScrollView Children만큼 크게 해주고 싶다.
+    flexDirection: 'row',
   },
   day: {
-    flex: 1,
+    // flex가 적용이 안되니, 전체 스크린 사이즈를 가져와야 하나의 아이템이 하나의 스크롤 페이지를 차지함.
+    // flex: 1, 
+    width: Dimensions.get('window').width,
     alignItems: 'center',
   },
   temp: {
