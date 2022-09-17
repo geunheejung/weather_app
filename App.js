@@ -1,18 +1,39 @@
-import { StatusBar } from 'expo-status-bar';
+import { useState, useEffect } from 'react';
+import * as Location from 'expo-location';
 import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
 
 export default function App() {
+  const [ city, setCity ] = useState('Loading...');
+  const [ location, setLocation ] = useState(null);
+  const [ ok, setOk ] = useState(true);
+
+  const ask = async() => {
+    const { granted } = await Location.requestForegroundPermissionsAsync();
+
+    if (!granted) setOk(false);
+
+    const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: 5 });
+
+    const [{ city }] = await Location.reverseGeocodeAsync({ latitude, longitude }, { useGoogleMaps: false });
+
+    setCity(city);
+  } 
+
+  useEffect(() => {
+    ask();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.city}>
-        <Text style={styles.cityName}>Seoul</Text>
+        <Text style={styles.cityName}>{city}</Text>
       </View>      
       <ScrollView 
         contentContainerStyle={styles.weather} 
         horizontal // 가로로 스크롤링되게 해줌.
         showsHorizontalScrollIndicator={false}
         // indicatorStyle='white'
-        pagingEnabled // ture일 경우, 왼전히 스크롤링을 해야 스크롤이 넘어가게함.
+        pagingEnabled // ture일 경우, 스크로링이 중간에 멈추지 않고 완전히 넘어가게함.
       >
         <View style={styles.day}>
           <Text style={styles.temp}>27</Text>
